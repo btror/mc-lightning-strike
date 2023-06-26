@@ -5,8 +5,6 @@ import mclightningstrike.mclightningstrike.lightning.pathfinding.Animation;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
-
 public class Lightning {
 
     private McLightningStrike plugin;
@@ -19,21 +17,12 @@ public class Lightning {
     }
 
     public void strike() {
-        // TODO: pathfinding strike
         Location[][][] lightningZone = generateLightningZone();
-        getLogger().info("original strike start location");
-        getLogger().info(strikeStart);
-        getLogger().info("original strike target location");
-        getLogger().info(strikeTarget);
-
-        getLogger().info(".start()");
         new Animation(plugin, lightningZone, strikeStart, strikeTarget).start();
 
-        // placeholder strike
-        strikeTarget.getBlock().setType(Material.DIAMOND_BLOCK);
+        strikeTarget.getBlock().setType(Material.GOLD_BLOCK);
         strikeStart.getBlock().setType(Material.GOLD_BLOCK);
     }
-
 
     public Location[][][] generateLightningZone() {
         Location[][][] lightningZone = new Location[20][20][20];

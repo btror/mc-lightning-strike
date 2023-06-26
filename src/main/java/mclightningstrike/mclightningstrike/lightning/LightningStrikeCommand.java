@@ -1,6 +1,5 @@
 package mclightningstrike.mclightningstrike.lightning;
 
-
 import mclightningstrike.mclightningstrike.McLightningStrike;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -18,8 +17,7 @@ public record LightningStrikeCommand(McLightningStrike plugin) implements Comman
             @NotNull CommandSender sender,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args)
-    {
+            @NotNull String[] args) {
         try {
             Player player = (Player) sender;
 

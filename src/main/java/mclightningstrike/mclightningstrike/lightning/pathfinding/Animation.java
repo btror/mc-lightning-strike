@@ -1,7 +1,6 @@
 package mclightningstrike.mclightningstrike.lightning.pathfinding;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
-import org.apache.logging.log4j.Logger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -13,6 +12,12 @@ public class Animation {
     private Location[][][] lightningZone;
     private Location strikeStart;
     private Location strikeTarget;
+
+    private int[][][] simulationLightningZone;
+    private int[] simulationStrikeStart;
+    private int[] simulationStrikeTarget;
+
+    private int[][][] completedSimulationLightningZone;
 
     public Animation(
             McLightningStrike plugin,
@@ -27,18 +32,34 @@ public class Animation {
     }
 
     public void start() {
-        generateLightningStrikeSimulation();
+        createLightningStrikeZoneSimulation();
+        startLightningStrikeSimulation();
+        if (completedSimulationLightningZone != null) {
+            for (int i = 0; i < completedSimulationLightningZone.length; i++) {
+                for (int j = 0; j < completedSimulationLightningZone[0].length; j++) {
+                    for (int k = 0; k < completedSimulationLightningZone[0][0].length; k++) {
+                        if (completedSimulationLightningZone[i][j][k] == 3) {
+                            lightningZone[i][j][k].getBlock().setType(Material.DIAMOND_BLOCK);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /*
      * simulation lightning zone definitions:
      *  - 0 = open
      *  - 1 = blocker
-     *  - 2 = start
-     *  - 3 = target
+     *  - 2 = explored
+     *  - 3 = in final path
+     *  - 4 = start
+     *  - 5 = target
      */
-    public void generateLightningStrikeSimulation() {
-        int[][][] simulationLightningZone = new int[lightningZone.length][lightningZone.length][lightningZone.length];
+    public void createLightningStrikeZoneSimulation() {
+        simulationLightningZone = new int[lightningZone.length][lightningZone.length][lightningZone.length];
+        simulationStrikeStart = new int[3];
+        simulationStrikeTarget = new int[3];
 
         for (int i = 0; i < lightningZone.length; i++) {
             for (int j = 0; j < lightningZone[i].length; j++) {
@@ -50,19 +71,37 @@ public class Animation {
                     }
 
                     if (lightningZone[i][j][k] == strikeStart) {
-                        simulationLightningZone[i][j][k] = 3;
-                        getLogger().info("strike start");
-                        getLogger().info("i: " + i + ", j: " + j + ", k: " + k);
-                        getLogger().info(lightningZone[i][j][k]);
-                    }
-                    if (lightningZone[i][j][k] == strikeTarget) {
                         simulationLightningZone[i][j][k] = 4;
-                        getLogger().info("strike target");
-                        getLogger().info("i: " + i + ", j: " + j + ", k: " + k);
-                        getLogger().info(lightningZone[i][j][k]);
+
+                        simulationStrikeStart[0] = i;
+                        simulationStrikeStart[1] = j;
+                        simulationStrikeStart[2] = k;
+                    }
+
+                    if (lightningZone[i][j][k] == strikeTarget) {
+                        simulationLightningZone[i][j][k] = 5;
+
+                        simulationStrikeTarget[0] = i;
+                        simulationStrikeTarget[1] = j;
+                        simulationStrikeTarget[2] = k;
                     }
                 }
             }
+        }
+    }
+
+    public void startLightningStrikeSimulation() {
+        createLightningStrikeZoneSimulation();
+
+        Simulation simulation = new Simulation(simulationLightningZone, simulationStrikeStart, simulationStrikeTarget);
+        simulation.setup();
+
+        boolean successfulSimulation = simulation.start();
+
+        if (!successfulSimulation) {
+            getLogger().info("No possible path found.");
+        } else {
+            completedSimulationLightningZone = simulation.getSimulationLightningZone();
         }
     }
 }
