@@ -3,6 +3,8 @@ package mclightningstrike.mclightningstrike.lightning.pathfinding;
 import mclightningstrike.mclightningstrike.McLightningStrike;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.World;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
@@ -39,7 +41,13 @@ public class Animation {
                 for (int j = 0; j < completedSimulationLightningZone[0].length; j++) {
                     for (int k = 0; k < completedSimulationLightningZone[0][0].length; k++) {
                         if (completedSimulationLightningZone[i][j][k] == 3) {
-                            lightningZone[i][j][k].getBlock().setType(Material.DIAMOND_BLOCK);
+                            // lightningZone[i][j][k].getBlock().setType(Material.DIAMOND_BLOCK);
+                            World w = lightningZone[i][j][k].getBlock().getLocation().getWorld();
+                            w.spawnParticle(
+                                    Particle.HEART, // NOTE
+                                    lightningZone[i][j][k].getBlock().getLocation(),
+                                    1
+                            );
                         }
                     }
                 }

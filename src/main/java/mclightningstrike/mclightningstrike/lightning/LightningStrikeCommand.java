@@ -30,8 +30,6 @@ public record LightningStrikeCommand(McLightningStrike plugin) implements Comman
 
             new Lightning(plugin, strikeTarget).strike();
 
-            player.sendMessage("strike at: " + strikeTarget);
-
             return true;
 
         } catch (Exception e) {

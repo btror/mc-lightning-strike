@@ -19,9 +19,6 @@ public class Lightning {
     public void strike() {
         Location[][][] lightningZone = generateLightningZone();
         new Animation(plugin, lightningZone, strikeStart, strikeTarget).start();
-
-        strikeTarget.getBlock().setType(Material.GOLD_BLOCK);
-        strikeStart.getBlock().setType(Material.GOLD_BLOCK);
     }
 
     public Location[][][] generateLightningZone() {
