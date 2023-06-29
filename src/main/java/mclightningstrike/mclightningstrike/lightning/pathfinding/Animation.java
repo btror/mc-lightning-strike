@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
@@ -37,11 +38,14 @@ public class Animation {
         createLightningStrikeZoneSimulation();
         startLightningStrikeSimulation();
         // strikeStart.getWorld().spawnEntity(strikeStart, EntityType.AREA_EFFECT_CLOUD);
+
         createCloud();
+
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100,30);
+                strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100, 30);
                 if (completedSimulationLightningZone != null) {
                     for (int i = 0; i < completedSimulationLightningZone.length; i++) {
                         for (int j = 0; j < completedSimulationLightningZone[0].length; j++) {
@@ -60,26 +64,62 @@ public class Animation {
                 }
                 cancel();
             }
-        }.runTaskTimer(plugin, 25L, 20L);
-
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     public void createCloud() {
-        for (int i = 1; i < 6; i++) {
-            for (int j = 1; j < 6; j++) {
-                int randomY = (int)(Math.random() * (3)) + 1;
-                int randomGen = (int)(Math.random() * 6);
-                if (randomGen % 3 == 0) {
-                    Location location = new Location(
-                            strikeStart.getWorld(),
-                            strikeStart.getBlock().getX() - 5 + (i * 2),
-                            strikeStart.getBlock().getY() + randomY,
-                            strikeStart.getBlock().getZ() - 5 + (j * 2)
-                    );
-                    strikeStart.getWorld().spawnEntity(location, EntityType.AREA_EFFECT_CLOUD);
+        new BukkitRunnable() {
+            double t = 0;
+
+            @Override
+            public void run() {
+                goForward();
+                goBackward();
+
+                if (t > 30.0) {
+                    this.cancel();
                 }
+                t += 0.5;
             }
-        }
+
+            public void goForward() {
+                Vector direction = strikeStart.getDirection().normalize(); // what is this?
+                double x = direction.getX() * t;
+                double y = direction.getY() * t;
+                double z = direction.getZ() * t;
+                strikeStart.add(x, y, z);
+                strikeStart.getWorld().spawnParticle(
+                        Particle.FIREWORKS_SPARK,
+                        strikeStart,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0
+                );
+                // strikeStart.getWorld().spawnEntity(strikeStart, EntityType.AREA_EFFECT_CLOUD);
+                strikeStart.subtract(x, y, z);
+            }
+
+            public void goBackward() {
+                Vector direction = strikeStart.getDirection().normalize(); // what is this?
+                double x = direction.getX() * t;
+                double y = direction.getY() * t;
+                double z = direction.getZ() * t;
+                strikeStart.subtract(x, y, z);
+                strikeStart.getWorld().spawnParticle(
+                        Particle.FIREWORKS_SPARK,
+                        strikeStart,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0
+                );
+                // strikeStart.getWorld().spawnEntity(strikeStart, EntityType.AREA_EFFECT_CLOUD);
+                strikeStart.add(x, y, z);
+            }
+        }.runTaskTimer(plugin, 0, 1);
     }
 
     /*
