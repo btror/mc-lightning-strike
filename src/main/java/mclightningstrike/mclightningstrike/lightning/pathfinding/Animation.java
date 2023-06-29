@@ -42,9 +42,9 @@ public class Animation {
         createCloud();
 
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
                 strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100, 30);
                 if (completedSimulationLightningZone != null) {
                     for (int i = 0; i < completedSimulationLightningZone.length; i++) {
@@ -53,18 +53,22 @@ public class Animation {
                                 if (completedSimulationLightningZone[i][j][k] == 3) {
                                     World w = lightningZone[i][j][k].getBlock().getLocation().getWorld();
                                     w.spawnParticle(
-                                            Particle.HEART,
+                                            Particle.FIREWORKS_SPARK,
                                             lightningZone[i][j][k].getBlock().getLocation(),
-                                            1
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0
                                     );
                                 }
                             }
                         }
                     }
                 }
-                cancel();
-            }
-        }.runTaskTimer(plugin, 0, 1);
+//                cancel();
+//            }
+//        }.runTaskTimer(plugin, 0, 1);
     }
 
     public void createCloud() {
@@ -73,51 +77,101 @@ public class Animation {
 
             @Override
             public void run() {
-                goForward();
-                goBackward();
+                Vector direction = strikeStart.getDirection().normalize();
+                double x = direction.getX() * t;
+                double y = direction.getY() * t;
+                double z = direction.getZ() * t;
 
-                if (t > 30.0) {
+                for (int i = 0; i < 5; i++) {
+                    Location location = new Location(
+                            strikeTarget.getWorld(),
+                            strikeStart.getX() + i,
+                            strikeStart.getY(),
+                            strikeStart.getZ()
+                    );
+                    goForward(x, y, z, location);
+                }
+                for (int i = 0; i < 5; i++) {
+                    Location location = new Location(
+                            strikeTarget.getWorld(),
+                            strikeStart.getX() - i,
+                            strikeStart.getY(),
+                            strikeStart.getZ()
+                    );
+                    goForward(x, y, z, location);
+                }
+                goForward(x, y, z, strikeStart);
+
+                for (int i = 0; i < 5; i++) {
+                    Location location = new Location(
+                            strikeTarget.getWorld(),
+                            strikeStart.getX() - i,
+                            strikeStart.getY(),
+                            strikeStart.getZ()
+                    );
+                    goBackward(x, y, z, location);
+                }
+                for (int i = 0; i < 5; i++) {
+                    Location location = new Location(
+                            strikeTarget.getWorld(),
+                            strikeStart.getX() + i,
+                            strikeStart.getY(),
+                            strikeStart.getZ()
+                    );
+                    goBackward(x, y, z, location);
+                }
+                goBackward(x, y, z, strikeStart);
+
+                if (t > 12.0) {
                     this.cancel();
                 }
                 t += 0.5;
             }
 
-            public void goForward() {
-                Vector direction = strikeStart.getDirection().normalize(); // what is this?
-                double x = direction.getX() * t;
-                double y = direction.getY() * t;
-                double z = direction.getZ() * t;
-                strikeStart.add(x, y, z);
-                strikeStart.getWorld().spawnParticle(
-                        Particle.FIREWORKS_SPARK,
-                        strikeStart,
+            public void goForward(double x, double y, double z, Location location) {
+                location.add(x, y, z);
+                location.getWorld().spawnParticle(
+                        Particle.SMOKE_LARGE,
+                        location,
                         1,
                         0,
                         0,
                         0,
                         0
                 );
-                // strikeStart.getWorld().spawnEntity(strikeStart, EntityType.AREA_EFFECT_CLOUD);
-                strikeStart.subtract(x, y, z);
+                location.getWorld().spawnParticle(
+                        Particle.CAMPFIRE_SIGNAL_SMOKE,
+                        location,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0
+                );
+                location.subtract(x, y, z);
             }
 
-            public void goBackward() {
-                Vector direction = strikeStart.getDirection().normalize(); // what is this?
-                double x = direction.getX() * t;
-                double y = direction.getY() * t;
-                double z = direction.getZ() * t;
-                strikeStart.subtract(x, y, z);
-                strikeStart.getWorld().spawnParticle(
-                        Particle.FIREWORKS_SPARK,
-                        strikeStart,
+            public void goBackward(double x, double y, double z, Location location) {
+                location.subtract(x, y, z);
+                location.getWorld().spawnParticle(
+                        Particle.SMOKE_LARGE,
+                        location,
                         1,
                         0,
                         0,
                         0,
                         0
                 );
-                // strikeStart.getWorld().spawnEntity(strikeStart, EntityType.AREA_EFFECT_CLOUD);
-                strikeStart.add(x, y, z);
+                location.getWorld().spawnParticle(
+                        Particle.CAMPFIRE_SIGNAL_SMOKE,
+                        location,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0
+                );
+                location.add(x, y, z);
             }
         }.runTaskTimer(plugin, 0, 1);
     }
