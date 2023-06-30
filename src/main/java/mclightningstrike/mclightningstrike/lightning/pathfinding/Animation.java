@@ -7,6 +7,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.Random;
+
 import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class Animation {
@@ -78,54 +80,62 @@ public class Animation {
             @Override
             public void run() {
                 Vector direction = strikeStart.getDirection().normalize();
-                double x = direction.getX() * t;
-                double y = direction.getY() * t;
-                double z = direction.getZ() * t;
+                double randTx = 0 + new Random().nextDouble() * (0.5);
+                double randTy = 0 + new Random().nextDouble() * (0.5);
+                double randTz = 0 + new Random().nextDouble() * (0.5);
+                double x = direction.getX() * (t + randTx);
+                double y = direction.getY() * (t + randTy);
+                double z = direction.getZ() * (t + randTz);
 
                 for (int i = 0; i < 5; i++) {
+                    double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
-                            strikeStart.getX() + i,
+                            strikeStart.getX() + (i / random),
                             strikeStart.getY(),
                             strikeStart.getZ()
                     );
                     goForward(x, y, z, location);
                 }
                 for (int i = 0; i < 5; i++) {
+                    double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
-                            strikeStart.getX() - i,
+                            strikeStart.getX() - (i / random),
                             strikeStart.getY(),
                             strikeStart.getZ()
                     );
                     goForward(x, y, z, location);
                 }
-                goForward(x, y, z, strikeStart);
+                //goForward(x, y, z, strikeStart);
 
                 for (int i = 0; i < 5; i++) {
+                    double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
-                            strikeStart.getX() - i,
+                            strikeStart.getX() - (i / random),
                             strikeStart.getY(),
                             strikeStart.getZ()
                     );
                     goBackward(x, y, z, location);
                 }
                 for (int i = 0; i < 5; i++) {
+                    double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
-                            strikeStart.getX() + i,
+                            strikeStart.getX() + (i / random),
                             strikeStart.getY(),
                             strikeStart.getZ()
                     );
                     goBackward(x, y, z, location);
                 }
-                goBackward(x, y, z, strikeStart);
+                //goBackward(x, y, z, strikeStart);
 
                 if (t > 12.0) {
                     this.cancel();
                 }
-                t += 0.5;
+                double random = 0 + new Random().nextDouble() * (0.5);
+                t += random; // 0.5;
             }
 
             public void goForward(double x, double y, double z, Location location) {
