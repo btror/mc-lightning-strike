@@ -80,14 +80,14 @@ public class Animation {
             @Override
             public void run() {
                 Vector direction = strikeStart.getDirection().normalize();
-                double randTx = 0 + new Random().nextDouble() * (0.5);
+                double randTx = 0 + new Random().nextDouble() * (0.3);
                 double randTy = 0 + new Random().nextDouble() * (0.5);
-                double randTz = 0 + new Random().nextDouble() * (0.5);
+                double randTz = 0 + new Random().nextDouble() * (0.3);
                 double x = direction.getX() * (t + randTx);
                 double y = direction.getY() * (t + randTy);
                 double z = direction.getZ() * (t + randTz);
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 8; i++) {
                     double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
@@ -97,7 +97,7 @@ public class Animation {
                     );
                     goForward(x, y, z, location);
                 }
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 8; i++) {
                     double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
@@ -109,7 +109,7 @@ public class Animation {
                 }
                 //goForward(x, y, z, strikeStart);
 
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 8; i++) {
                     double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
@@ -119,7 +119,7 @@ public class Animation {
                     );
                     goBackward(x, y, z, location);
                 }
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < 8; i++) {
                     double random = 1.5 + new Random().nextDouble();
                     Location location = new Location(
                             strikeTarget.getWorld(),
@@ -131,10 +131,10 @@ public class Animation {
                 }
                 //goBackward(x, y, z, strikeStart);
 
-                if (t > 12.0) {
+                if (t > 8.0) {
                     this.cancel();
                 }
-                double random = 0 + new Random().nextDouble() * (0.5);
+                double random = 0 + new Random().nextDouble() * (0.25);
                 t += random; // 0.5;
             }
 
