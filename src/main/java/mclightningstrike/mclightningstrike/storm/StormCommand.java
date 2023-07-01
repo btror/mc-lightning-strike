@@ -1,4 +1,4 @@
-package mclightningstrike.mclightningstrike.lightning;
+package mclightningstrike.mclightningstrike.storm;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
 import org.bukkit.Location;
@@ -11,7 +11,16 @@ import org.jetbrains.annotations.NotNull;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
-public record LightningStrikeCommand(McLightningStrike plugin) implements CommandExecutor, Listener {
+public record StormCommand(McLightningStrike plugin) implements CommandExecutor, Listener {
+
+    /**
+     * Command listener.
+     *
+     * @param sender  player who sent the command.
+     * @param command command
+     * @param label   label
+     * @param args    args
+     */
     @Override
     public boolean onCommand(
             @NotNull CommandSender sender,
@@ -20,7 +29,6 @@ public record LightningStrikeCommand(McLightningStrike plugin) implements Comman
             @NotNull String[] args) {
         try {
             Player player = (Player) sender;
-
             Location strikeTarget = new Location(
                     player.getLocation().getWorld(),
                     player.getLocation().getX() + 25,
@@ -28,7 +36,7 @@ public record LightningStrikeCommand(McLightningStrike plugin) implements Comman
                     player.getLocation().getZ()
             );
 
-            new Lightning(plugin, strikeTarget).strike();
+            new Storm(plugin, strikeTarget).generate();
 
             return true;
 

@@ -1,29 +1,53 @@
-package mclightningstrike.mclightningstrike.lightning;
+package mclightningstrike.mclightningstrike.storm;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
-import mclightningstrike.mclightningstrike.lightning.pathfinding.Animation;
+import mclightningstrike.mclightningstrike.storm.pathfinding.Animation;
 import org.bukkit.Location;
-import org.bukkit.Material;
 
-public class Lightning {
+public class Storm {
 
-    private McLightningStrike plugin;
+    private final McLightningStrike plugin;
     private Location strikeTarget;
     private Location strikeStart;
 
-    public Lightning(McLightningStrike plugin, Location strikeTarget) {
+    /**
+     * Constructor.
+     * <p>
+     * Creates a storm.
+     *
+     * @param plugin       McLightningStrike instance
+     * @param strikeTarget location of storm bolt target
+     */
+    public Storm(McLightningStrike plugin, Location strikeTarget) {
         this.plugin = plugin;
         this.strikeTarget = strikeTarget;
     }
 
-    public void strike() {
-        Location[][][] lightningZone = generateLightningZone();
+    /**
+     * Strikes storm
+     * <p>
+     * Storm Zone Mappings:
+     * i = length
+     * j = height
+     * k = width
+     */
+    public void generate() {
+        Location[][][] lightningZone = createStormZone();
         new Animation(plugin, lightningZone, strikeStart, strikeTarget).start();
     }
 
-    public Location[][][] generateLightningZone() {
+    /**
+     * Creates storm zone (LxWxH).
+     * <p>
+     * Storm Zone Mappings:
+     * i = length
+     * j = height
+     * k = width
+     *
+     * @return storm location.
+     */
+    private Location[][][] createStormZone() {
         Location[][][] lightningZone = new Location[20][20][20];
-        // i is width, j is height, k is length
         for (int i = 0; i < lightningZone.length; i++) {
             for (int j = 0; j < lightningZone[i].length; j++) {
                 for (int k = 0; k < lightningZone[i][j].length; k++) {

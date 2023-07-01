@@ -1,4 +1,4 @@
-package mclightningstrike.mclightningstrike.lightning.pathfinding;
+package mclightningstrike.mclightningstrike.storm.pathfinding;
 
 public class Node {
     private final int row;

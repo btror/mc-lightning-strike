@@ -1,10 +1,10 @@
-name: mc-lightning-strike
+name: mc-storm-strike
 author: btror
-description: LightningStrikeCommand Lightning Plugin
+description: StormCommand Storm Plugin
 version: '${project.version}'
 main: mclightningstrike.mclightningstrike.McLightningStrike
 api-version: 1.13
 commands:
   strike:
-    description: calls lightning strike command
+    description: calls storm strike command
     usage: /strike

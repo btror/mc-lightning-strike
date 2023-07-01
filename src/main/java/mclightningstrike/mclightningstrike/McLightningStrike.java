@@ -1,7 +1,7 @@
 package mclightningstrike.mclightningstrike;
 
-import mclightningstrike.mclightningstrike.lightning.LightningStrikeCommand;
-import mclightningstrike.mclightningstrike.lightning.LightningStrikeEvent;
+import mclightningstrike.mclightningstrike.storm.StormCommand;
+import mclightningstrike.mclightningstrike.storm.StormEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -10,17 +10,17 @@ public class McLightningStrike extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("lightning strike plugin enabled...");
+        getLogger().info("storm strike plugin enabled...");
 
-        LightningStrikeCommand command = new LightningStrikeCommand(this);
+        StormCommand command = new StormCommand(this);
         Objects.requireNonNull(getCommand("strike")).setExecutor(command);
         getServer().getPluginManager().registerEvents(command, this);
 
-        getServer().getPluginManager().registerEvents(new LightningStrikeEvent(this), this);
+        getServer().getPluginManager().registerEvents(new StormEvent(this), this);
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("lightning strike plugin disabled...");
+        getLogger().info("storm strike plugin disabled...");
     }
 }

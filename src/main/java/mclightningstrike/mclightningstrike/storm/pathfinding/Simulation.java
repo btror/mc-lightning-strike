@@ -1,31 +1,33 @@
-package mclightningstrike.mclightningstrike.lightning.pathfinding;
+package mclightningstrike.mclightningstrike.storm.pathfinding;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class Simulation {
-
-    private int[][][] simulationLightningZone;
-    private int[] simulationStrikeStart;
-    private int[] simulationStrikeTarget;
+    private final int[][][] simulationLightningZone;
+    private final int[] simulationStrikeStart;
+    private final int[] simulationStrikeTarget;
 
     private Node[][][] simulationNodeLightningZone;
     private Node simulationNodeStrikeStart;
     private Node simulationNodeStrikeTarget;
     private Node simulationNodeStrikeCurrent;
 
-    private PriorityQueue<Node> openList;
-    private ArrayList<Node> closedList;
+    private final PriorityQueue<Node> openList;
+    private final ArrayList<Node> closedList;
 
-
-    /*
-     * simulation lightning zone definitions:
-     *  - 0 = open
-     *  - 1 = blocker
-     *  - 2 = explored
-     *  - 3 = in final path
-     *  - 4 = start
-     *  - 5 = target
+    /**
+     * Constructor.
+     * <p>
+     * Creates a storm simulation.
+     * <p>
+     * Simulation Integer Mappings:
+     * 0 = open space (can be explored in pathfinding)
+     * 1 = blocked space (cannot be explored in pathfinding)
+     * 2 = visited space (already explored in pathfinding)
+     * 3 = final path space (space in the final path)
+     * 4 = start space
+     * 5 = target space
      */
     public Simulation(
             int[][][] simulationLightningZone,
@@ -42,7 +44,10 @@ public class Simulation {
         this.closedList = new ArrayList<>();
     }
 
-    public void setup() {
+    /**
+     * Kick off storm simulation pathfinding.
+     */
+    public void start() {
         simulationNodeStrikeCurrent = new Node(
                 simulationStrikeStart[0],
                 simulationStrikeStart[1],
@@ -88,7 +93,12 @@ public class Simulation {
         openList.add(simulationNodeStrikeCurrent);
     }
 
-    public boolean start() {
+    /**
+     * Creates the final pathfinding path (supposed to emulate the storm bolt).
+     *
+     * @return final path found.
+     */
+    public boolean getPath() {
         boolean pathFound = true;
         while (!openList.isEmpty() && !simulationNodeStrikeCurrent.equals(simulationNodeStrikeTarget)) {
             simulationNodeStrikeCurrent = openList.peek();
@@ -131,7 +141,13 @@ public class Simulation {
         return pathFound;
     }
 
-    public int calculateG(Node node) {
+    /**
+     * Calculate node movement cost.
+     *
+     * @param node simulation node.
+     * @return movement cost.
+     */
+    private int calculateG(Node node) {
         int row = node.getRow();
         int col = node.getCol();
         int zNum = node.getZ();
@@ -167,7 +183,13 @@ public class Simulation {
         return 10 + parent.getG();
     }
 
-    public int calculateH(Node node) {
+    /**
+     * Calculate node heuristic value.
+     *
+     * @param node simulation node.
+     * @return heuristic value.
+     */
+    private int calculateH(Node node) {
         int row = node.getRow();
         int col = node.getCol();
         int zNum = node.getZ();
@@ -208,7 +230,10 @@ public class Simulation {
         return x + y + z;
     }
 
-    public void calculateNeighborValues() {
+    /**
+     * Calculate neighboring node values.
+     */
+    private void calculateNeighborValues() {
         int row = simulationNodeStrikeCurrent.getRow();
         int col = simulationNodeStrikeCurrent.getCol();
         int zNum = simulationNodeStrikeCurrent.getZ();
@@ -298,7 +323,12 @@ public class Simulation {
         }
     }
 
-    public ArrayList<Node> generatePath() {
+    /**
+     * Generate final pathfinding path.
+     *
+     * @return final path.
+     */
+    private ArrayList<Node> generatePath() {
         ArrayList<Node> path = new ArrayList<>();
         Node temp = simulationNodeStrikeCurrent;
         path.add(temp);
@@ -309,6 +339,11 @@ public class Simulation {
         return path;
     }
 
+    /**
+     * Get storm simulation.
+     *
+     * @return storm simulation.
+     */
     public int[][][] getSimulationLightningZone() {
         return simulationLightningZone;
     }
