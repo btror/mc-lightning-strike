@@ -238,62 +238,7 @@ public class Simulation {
         int col = simulationNodeStrikeCurrent.getCol();
         int zNum = simulationNodeStrikeCurrent.getZ();
 
-        if (row - 1 > -1 && simulationStormZone[row - 1][col][zNum].getType() == 0
-                && !closedList.contains(simulationStormZone[row - 1][col][zNum])) {
-            Node[][][] grid = simulationStormZone;
-            grid[row - 1][col][zNum].setParent(simulationNodeStrikeCurrent);
-            int g = calculateG(grid[row - 1][col][zNum]);
-            grid[row - 1][col][zNum].setG(g);
-            int h = calculateH(grid[row - 1][col][zNum]);
-            grid[row - 1][col][zNum].setH(h);
-            grid[row - 1][col][zNum].setF();
-            simulationStormZone = grid;
-            openList.add(grid[row - 1][col][zNum]);
-            stormZone[row - 1][col][zNum] = 2;
-        }
-
-        if (col + 1 < simulationStormZone.length && simulationStormZone[row][col + 1][zNum].getType() == 0
-                && !closedList.contains(simulationStormZone[row][col + 1][zNum])) {
-            Node[][][] grid = simulationStormZone;
-            grid[row][col + 1][zNum].setParent(simulationNodeStrikeCurrent);
-            int g = calculateG(grid[row][col + 1][zNum]);
-            grid[row][col + 1][zNum].setG(g);
-            int h = calculateH(grid[row][col + 1][zNum]);
-            grid[row][col + 1][zNum].setH(h);
-            grid[row][col + 1][zNum].setF();
-            simulationStormZone = grid;
-            openList.add(grid[row][col + 1][zNum]);
-            stormZone[row][col + 1][zNum] = 2;
-        }
-
-        if (row + 1 < simulationStormZone.length && simulationStormZone[row + 1][col][zNum].getType() == 0
-                && !closedList.contains(simulationStormZone[row + 1][col][zNum])) {
-            Node[][][] grid = simulationStormZone;
-            grid[row + 1][col][zNum].setParent(simulationNodeStrikeCurrent);
-            int g = calculateG(grid[row + 1][col][zNum]);
-            grid[row + 1][col][zNum].setG(g);
-            int h = calculateH(grid[row + 1][col][zNum]);
-            grid[row + 1][col][zNum].setH(h);
-            grid[row + 1][col][zNum].setF();
-            simulationStormZone = grid;
-            openList.add(grid[row + 1][col][zNum]);
-            stormZone[row + 1][col][zNum] = 2;
-        }
-
-        if (col - 1 > -1 && simulationStormZone[row][col - 1][zNum].getType() == 0
-                && !closedList.contains(simulationStormZone[row][col - 1][zNum])) {
-            Node[][][] grid = simulationStormZone;
-            grid[row][col - 1][zNum].setParent(simulationNodeStrikeCurrent);
-            int g = calculateG(grid[row][col - 1][zNum]);
-            grid[row][col - 1][zNum].setG(g);
-            int h = calculateH(grid[row][col - 1][zNum]);
-            grid[row][col - 1][zNum].setH(h);
-            grid[row][col - 1][zNum].setF();
-            simulationStormZone = grid;
-            openList.add(grid[row][col - 1][zNum]);
-            stormZone[row][col - 1][zNum] = 2;
-        }
-
+        // bottom
         if (zNum - 1 > -1 && simulationStormZone[row][col][zNum - 1].getType() == 0
                 && !closedList.contains(simulationStormZone[row][col][zNum - 1])) {
             Node[][][] grid = simulationStormZone;
@@ -308,6 +253,67 @@ public class Simulation {
             stormZone[row][col][zNum - 1] = 2;
         }
 
+        // left
+        if (col + 1 < simulationStormZone.length && simulationStormZone[row][col + 1][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col + 1][zNum])) {
+            Node[][][] grid = simulationStormZone;
+            grid[row][col + 1][zNum].setParent(simulationNodeStrikeCurrent);
+            int g = calculateG(grid[row][col + 1][zNum]);
+            grid[row][col + 1][zNum].setG(g);
+            int h = calculateH(grid[row][col + 1][zNum]);
+            grid[row][col + 1][zNum].setH(h);
+            grid[row][col + 1][zNum].setF();
+            simulationStormZone = grid;
+            openList.add(grid[row][col + 1][zNum]);
+            stormZone[row][col + 1][zNum] = 2;
+        }
+
+        // front
+        if (row - 1 > -1 && simulationStormZone[row - 1][col][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row - 1][col][zNum])) {
+            Node[][][] grid = simulationStormZone;
+            grid[row - 1][col][zNum].setParent(simulationNodeStrikeCurrent);
+            int g = calculateG(grid[row - 1][col][zNum]);
+            grid[row - 1][col][zNum].setG(g);
+            int h = calculateH(grid[row - 1][col][zNum]);
+            grid[row - 1][col][zNum].setH(h);
+            grid[row - 1][col][zNum].setF();
+            simulationStormZone = grid;
+            openList.add(grid[row - 1][col][zNum]);
+            stormZone[row - 1][col][zNum] = 2;
+        }
+
+        // right
+        if (col - 1 > -1 && simulationStormZone[row][col - 1][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col - 1][zNum])) {
+            Node[][][] grid = simulationStormZone;
+            grid[row][col - 1][zNum].setParent(simulationNodeStrikeCurrent);
+            int g = calculateG(grid[row][col - 1][zNum]);
+            grid[row][col - 1][zNum].setG(g);
+            int h = calculateH(grid[row][col - 1][zNum]);
+            grid[row][col - 1][zNum].setH(h);
+            grid[row][col - 1][zNum].setF();
+            simulationStormZone = grid;
+            openList.add(grid[row][col - 1][zNum]);
+            stormZone[row][col - 1][zNum] = 2;
+        }
+
+        // back
+        if (row + 1 < simulationStormZone.length && simulationStormZone[row + 1][col][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row + 1][col][zNum])) {
+            Node[][][] grid = simulationStormZone;
+            grid[row + 1][col][zNum].setParent(simulationNodeStrikeCurrent);
+            int g = calculateG(grid[row + 1][col][zNum]);
+            grid[row + 1][col][zNum].setG(g);
+            int h = calculateH(grid[row + 1][col][zNum]);
+            grid[row + 1][col][zNum].setH(h);
+            grid[row + 1][col][zNum].setF();
+            simulationStormZone = grid;
+            openList.add(grid[row + 1][col][zNum]);
+            stormZone[row + 1][col][zNum] = 2;
+        }
+
+        // top
         if (zNum + 1 < simulationStormZone.length && simulationStormZone[row][col][zNum + 1].getType() == 0
                 && !closedList.contains(simulationStormZone[row][col][zNum + 1])) {
             Node[][][] grid = simulationStormZone;

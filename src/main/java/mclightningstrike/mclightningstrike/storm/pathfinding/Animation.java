@@ -10,11 +10,10 @@ import java.util.Random;
 
 public class Animation {
     private final McLightningStrike plugin;
-    private final Location[][][] stormZone;
-    private final Location strikeStart;
-    private final Location strikeTarget;
-
-    private int[][][] stormSimulation;
+    private static Location[][][] stormZone;
+    private static Location strikeStart;
+    private static Location strikeTarget;
+    private static int[][][] stormSimulation;
 
     /**
      * Constructor.
@@ -31,9 +30,9 @@ public class Animation {
             Location strikeTarget
     ) {
         this.plugin = plugin;
-        this.stormZone = stormZone;
-        this.strikeStart = strikeStart;
-        this.strikeTarget = strikeTarget;
+        Animation.stormZone = stormZone;
+        Animation.strikeStart = strikeStart;
+        Animation.strikeTarget = strikeTarget;
     }
 
     /**
@@ -50,201 +49,7 @@ public class Animation {
      * Creates and animates a storm.
      */
     private void createStorm() {
-        strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 10);
-
-        new BukkitRunnable() {
-            double t = 0;
-
-            @Override
-            public void run() {
-                Vector direction = strikeStart.getDirection().normalize();
-                double randTx = 0 + new Random().nextDouble() * (0.3);
-                double randTy = 0 + new Random().nextDouble() * (0.5);
-                double randTz = 0 + new Random().nextDouble() * (0.3);
-                double x = direction.getX() * (t + randTx);
-                double y = direction.getY() * (t + randTy);
-                double z = direction.getZ() * (t + randTz);
-
-                spawnCloudLayer(6, 0, x, y, z);
-                spawnCloudLayer(7, 0.5, x, y, z);
-                spawnCloudLayer(9, 1.0, x, y, z);
-                spawnCloudLayer(8, 1.5, x, y, z);
-                spawnCloudLayer(6, 2.0, x, y, z);
-
-                if (t > 5.0) {
-                    createLightning();
-                    this.cancel();
-                }
-                double random = 0 + new Random().nextDouble() * (0.25);
-                t += random;
-            }
-
-            /**
-             * Shoots a storm bolt from the storm cloud.
-             */
-            private void createLightning() {
-                strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 150, 100);
-                strikeTarget.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 250, 100);
-
-                for (int i = 0; i < stormSimulation.length; i++) {
-                    for (int j = 0; j < stormSimulation[0].length; j++) {
-                        for (int k = 0; k < stormSimulation[0][0].length; k++) {
-                            if (stormSimulation[i][j][k] == 3) {
-                                World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                w.spawnParticle(
-                                        Particle.FIREWORKS_SPARK,
-                                        stormZone[i][j][k].getBlock().getLocation().getX(),
-                                        stormZone[i][j][k].getBlock().getLocation().getY(),
-                                        stormZone[i][j][k].getBlock().getLocation().getZ(),
-                                        1,
-                                        0,
-                                        0,
-                                        0,
-                                        0,
-                                        null,
-                                        true
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-
-            /**
-             * Spawns a layer of the storm cloud.
-             *
-             * @param length length of cloud layer
-             * @param layer n height of the cloud layer
-             * @param x x offset location
-             * @param y y offset location
-             * @param z z offset location
-             */
-            private void spawnCloudLayer(int length, double layer, double x, double y, double z) {
-                for (int i = 0; i < length; i++) {
-                    double randomX = 1.5 + new Random().nextDouble();
-                    double randomY = layer + new Random().nextDouble();
-                    Location location = new Location(
-                            strikeTarget.getWorld(),
-                            strikeStart.getX() + (i / randomX),
-                            strikeStart.getY() + randomY,
-                            strikeStart.getZ()
-                    );
-                    goForward(x, y, z, location);
-                }
-                for (int i = 0; i < length; i++) {
-                    double randomX = 1.5 + new Random().nextDouble();
-                    double randomY = layer + new Random().nextDouble();
-                    Location location = new Location(
-                            strikeTarget.getWorld(),
-                            strikeStart.getX() - (i / randomX),
-                            strikeStart.getY() + randomY,
-                            strikeStart.getZ()
-                    );
-                    goForward(x, y, z, location);
-                }
-
-                for (int i = 0; i < length; i++) {
-                    double randomX = 1.5 + new Random().nextDouble();
-                    double randomY = layer + new Random().nextDouble();
-                    Location location = new Location(
-                            strikeTarget.getWorld(),
-                            strikeStart.getX() + (i / randomX),
-                            strikeStart.getY() + randomY,
-                            strikeStart.getZ()
-                    );
-                    goBackward(x, y, z, location);
-                }
-                for (int i = 0; i < length; i++) {
-                    double randomX = 1.5 + new Random().nextDouble();
-                    double randomY = layer + new Random().nextDouble();
-                    Location location = new Location(
-                            strikeTarget.getWorld(),
-                            strikeStart.getX() - (i / randomX),
-                            strikeStart.getY() + randomY,
-                            strikeStart.getZ()
-                    );
-                    goBackward(x, y, z, location);
-                }
-            }
-
-            /**
-             * Spawns the front layer of the storm cloud.
-             *
-             * @param x offset location x position (length)
-             * @param y offset location y position (height)
-             * @param z offset location z position (width)
-             * @param location location
-             */
-            private void goForward(double x, double y, double z, Location location) {
-                location.add(x, y, z);
-                location.getWorld().spawnParticle(
-                        Particle.SMOKE_LARGE,
-                        location.getX(),
-                        location.getY(),
-                        location.getZ(),
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        null,
-                        true
-                );
-                location.getWorld().spawnParticle(
-                        Particle.CAMPFIRE_SIGNAL_SMOKE,
-                        location.getX(),
-                        location.getY(),
-                        location.getZ(),
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        null,
-                        true
-                );
-                location.subtract(x, y, z);
-            }
-
-            /**
-             * Spawns the back layer of the storm cloud.
-             *
-             * @param x offset location x position (length)
-             * @param y offset location y position (height)
-             * @param z offset location z position (width)
-             * @param location location
-             */
-            private void goBackward(double x, double y, double z, Location location) {
-                location.subtract(x, y, z);
-                location.getWorld().spawnParticle(
-                        Particle.SMOKE_LARGE,
-                        location.getX(),
-                        location.getY(),
-                        location.getZ(),
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        null,
-                        true
-                );
-                location.getWorld().spawnParticle(
-                        Particle.CAMPFIRE_SIGNAL_SMOKE,
-                        location.getX(),
-                        location.getY(),
-                        location.getZ(),
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        null,
-                        true
-                );
-                location.add(x, y, z);
-            }
-        }.runTaskTimer(plugin, 0, 1);
+        new StormAnimation().runTaskTimer(plugin, 0, 1);
     }
 
     /**
@@ -300,5 +105,304 @@ public class Animation {
             return simulation.getSimulationStormZone();
         }
         return null;
+    }
+
+    /**
+     * Helper Class.
+     * <p>
+     * Storm animation class that extends BukkitRunnable. Responsible for handling cloud and lightning bold animations.
+     */
+    private static class StormAnimation extends BukkitRunnable {
+        private double t = 0;
+
+        /**
+         * Constructor.
+         * <p>
+         * Plays a sound for beginning of storm creation on initialization.
+         */
+        private StormAnimation() {
+            strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 50, 10);
+        }
+
+        @Override
+        public void run() {
+            Vector direction = strikeStart.getDirection().normalize();
+
+            double x = direction.getX() * (t + new Random().nextDouble() * (0.3));
+            double y = direction.getY() * (t + new Random().nextDouble() * (0.5));
+            double z = direction.getZ() * (t + new Random().nextDouble() * (0.3));
+
+            spawnCloudLayer(6, -1.0, x, y, z);
+            spawnCloudLayer(7, -0.5, x, y, z);
+            spawnCloudLayer(9, 0.0, x, y, z);
+            spawnCloudLayer(8, 0.5, x, y, z);
+            spawnCloudLayer(6, 1.0, x, y, z);
+
+            if (t > 5.0) {
+                createLightningBolt();
+                this.cancel();
+            }
+
+            t += new Random().nextDouble() * (0.25);
+        }
+
+        /**
+         * Shoots a lightning bolt from the storm cloud.
+         */
+        private void createLightningBolt() {
+            strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 150, 100);
+            strikeTarget.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 250, 100);
+
+            for (int i = 0; i < stormSimulation.length; i++) {
+                for (int j = 0; j < stormSimulation[0].length; j++) {
+                    for (int k = 0; k < stormSimulation[0][0].length; k++) {
+                        if (stormSimulation[i][j][k] == 3) {
+                            if (j > 0 && stormSimulation[i][j - 1][k] == 3) {
+                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                    w.spawnParticle(
+                                            Particle.FIREWORKS_SPARK,
+                                            stormZone[i][j][k].getBlock().getLocation().getX(),
+                                            stormZone[i][j][k].getBlock().getLocation().getY() - n,
+                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            null,
+                                            true
+                                    );
+                                }
+                            }
+//                            else if (i > 0 && stormSimulation[i - 1][j][k] == 3) {
+//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+//                                    w.spawnParticle(
+//                                            Particle.FIREWORKS_SPARK,
+//                                            stormZone[i][j][k].getBlock().getLocation().getX() - n,
+//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
+//                                            1,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            null,
+//                                            true
+//                                    );
+//                                }
+//                            }
+//                            else if (i < stormSimulation.length - 1 && stormSimulation[i + 1][j][k] == 3) {
+//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+//                                    w.spawnParticle(
+//                                            Particle.FIREWORKS_SPARK,
+//                                            stormZone[i][j][k].getBlock().getLocation().getX() + n,
+//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
+//                                            1,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            null,
+//                                            true
+//                                    );
+//                                }
+//                            }
+//                            else if (k > 0 && stormSimulation[i][j][k - 1] == 3) {
+//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+//                                    w.spawnParticle(
+//                                            Particle.FIREWORKS_SPARK,
+//                                            stormZone[i][j][k].getBlock().getLocation().getX(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getZ() - n,
+//                                            1,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            null,
+//                                            true
+//                                    );
+//                                }
+//                            }
+//                            else if (k < stormSimulation[0][0].length - 1 && stormSimulation[i][j][k + 1] == 3) {
+//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+//                                    w.spawnParticle(
+//                                            Particle.FIREWORKS_SPARK,
+//                                            stormZone[i][j][k].getBlock().getLocation().getX(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+//                                            stormZone[i][j][k].getBlock().getLocation().getZ() + n,
+//                                            1,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            0,
+//                                            null,
+//                                            true
+//                                    );
+//                                }
+//                            }
+                            else {
+                                World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                w.spawnParticle(
+                                        Particle.FIREWORKS_SPARK,
+                                        stormZone[i][j][k].getBlock().getLocation().getX(),
+                                        stormZone[i][j][k].getBlock().getLocation().getY(),
+                                        stormZone[i][j][k].getBlock().getLocation().getZ(),
+                                        1,
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        null,
+                                        true
+                                );
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Spawns a layer of the storm cloud.
+         *
+         * @param length length of cloud layer
+         * @param layer  n height of the cloud layer
+         * @param x      x offset location
+         * @param y      y offset location
+         * @param z      z offset location
+         */
+        private void spawnCloudLayer(int length, double layer, double x, double y, double z) {
+            for (int i = 0; i < length; i++) {
+                double randomX = 1.5 + new Random().nextDouble();
+                double randomY = layer + new Random().nextDouble();
+                Location location = new Location(
+                        strikeTarget.getWorld(),
+                        strikeStart.getX() + (i / randomX),
+                        strikeStart.getY() + randomY,
+                        strikeStart.getZ()
+                );
+                goForward(x, y, z, location);
+            }
+            for (int i = 0; i < length; i++) {
+                double randomX = 1.5 + new Random().nextDouble();
+                double randomY = layer + new Random().nextDouble();
+                Location location = new Location(
+                        strikeTarget.getWorld(),
+                        strikeStart.getX() - (i / randomX),
+                        strikeStart.getY() + randomY,
+                        strikeStart.getZ()
+                );
+                goForward(x, y, z, location);
+            }
+
+            for (int i = 0; i < length; i++) {
+                double randomX = 1.5 + new Random().nextDouble();
+                double randomY = layer + new Random().nextDouble();
+                Location location = new Location(
+                        strikeTarget.getWorld(),
+                        strikeStart.getX() + (i / randomX),
+                        strikeStart.getY() + randomY,
+                        strikeStart.getZ()
+                );
+                goBackward(x, y, z, location);
+            }
+            for (int i = 0; i < length; i++) {
+                double randomX = 1.5 + new Random().nextDouble();
+                double randomY = layer + new Random().nextDouble();
+                Location location = new Location(
+                        strikeTarget.getWorld(),
+                        strikeStart.getX() - (i / randomX),
+                        strikeStart.getY() + randomY,
+                        strikeStart.getZ()
+                );
+                goBackward(x, y, z, location);
+            }
+        }
+
+        /**
+         * Spawns the front layer of the storm cloud.
+         *
+         * @param x        offset location x position (length)
+         * @param y        offset location y position (height)
+         * @param z        offset location z position (width)
+         * @param location location
+         */
+        private void goForward(double x, double y, double z, Location location) {
+            location.add(x, y, z);
+            location.getWorld().spawnParticle(
+                    Particle.SMOKE_LARGE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    true
+            );
+            location.getWorld().spawnParticle(
+                    Particle.CAMPFIRE_SIGNAL_SMOKE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    true
+            );
+            location.subtract(x, y, z);
+        }
+
+        /**
+         * Spawns the back layer of the storm cloud.
+         *
+         * @param x        offset location x position (length)
+         * @param y        offset location y position (height)
+         * @param z        offset location z position (width)
+         * @param location location
+         */
+        private void goBackward(double x, double y, double z, Location location) {
+            location.subtract(x, y, z);
+            location.getWorld().spawnParticle(
+                    Particle.SMOKE_LARGE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    true
+            );
+            location.getWorld().spawnParticle(
+                    Particle.CAMPFIRE_SIGNAL_SMOKE,
+                    location.getX(),
+                    location.getY(),
+                    location.getZ(),
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null,
+                    true
+            );
+            location.add(x, y, z);
+        }
     }
 }
