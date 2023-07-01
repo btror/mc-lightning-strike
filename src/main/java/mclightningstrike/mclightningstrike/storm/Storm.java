@@ -32,8 +32,8 @@ public class Storm {
      * k = width
      */
     public void generate() {
-        Location[][][] lightningZone = createStormZone();
-        new Animation(plugin, lightningZone, strikeStart, strikeTarget).start();
+        Location[][][] stormZone = createStormZone();
+        new Animation(plugin, stormZone, strikeStart, strikeTarget).start();
     }
 
     /**
@@ -47,24 +47,24 @@ public class Storm {
      * @return storm location.
      */
     private Location[][][] createStormZone() {
-        Location[][][] lightningZone = new Location[20][20][20];
-        for (int i = 0; i < lightningZone.length; i++) {
-            for (int j = 0; j < lightningZone[i].length; j++) {
-                for (int k = 0; k < lightningZone[i][j].length; k++) {
+        Location[][][] stormZone = new Location[20][20][20];
+        for (int i = 0; i < stormZone.length; i++) {
+            for (int j = 0; j < stormZone[i].length; j++) {
+                for (int k = 0; k < stormZone[i][j].length; k++) {
                     Location location = new Location(
                             strikeTarget.getWorld(),
                             strikeTarget.getX() - 10 + i,
                             strikeTarget.getY() + 0 + j,
                             strikeTarget.getZ() + 10 - k
                     );
-                    lightningZone[i][j][k] = location;
+                    stormZone[i][j][k] = location;
                 }
             }
         }
 
-        strikeStart = lightningZone[(int) (Math.random() * 19)][19][(int) (Math.random() * 19)];
-        strikeTarget = lightningZone[10][0][10];
+        strikeStart = stormZone[(int) (Math.random() * 19)][19][(int) (Math.random() * 19)];
+        strikeTarget = stormZone[10][0][10];
 
-        return lightningZone;
+        return stormZone;
     }
 }

@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class Animation {
     private final McLightningStrike plugin;
-    private final Location[][][] lightningZone;
+    private final Location[][][] stormZone;
     private final Location strikeStart;
     private final Location strikeTarget;
 
@@ -19,19 +19,19 @@ public class Animation {
     /**
      * Constructor.
      *
-     * @param plugin        storm strike plugin instance
-     * @param lightningZone volume of space consisting of the storm
-     * @param strikeStart   start location of the top of the storm bolt
-     * @param strikeTarget  target location of the storm bolt
+     * @param plugin       storm strike plugin instance
+     * @param stormZone    volume of space consisting of the storm
+     * @param strikeStart  start location of the top of the storm bolt
+     * @param strikeTarget target location of the storm bolt
      */
     public Animation(
             McLightningStrike plugin,
-            Location[][][] lightningZone,
+            Location[][][] stormZone,
             Location strikeStart,
             Location strikeTarget
     ) {
         this.plugin = plugin;
-        this.lightningZone = lightningZone;
+        this.stormZone = stormZone;
         this.strikeStart = strikeStart;
         this.strikeTarget = strikeTarget;
     }
@@ -90,12 +90,12 @@ public class Animation {
                     for (int j = 0; j < stormSimulation[0].length; j++) {
                         for (int k = 0; k < stormSimulation[0][0].length; k++) {
                             if (stormSimulation[i][j][k] == 3) {
-                                World w = lightningZone[i][j][k].getBlock().getLocation().getWorld();
+                                World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
                                 w.spawnParticle(
                                         Particle.FIREWORKS_SPARK,
-                                        lightningZone[i][j][k].getBlock().getLocation().getX(),
-                                        lightningZone[i][j][k].getBlock().getLocation().getY(),
-                                        lightningZone[i][j][k].getBlock().getLocation().getZ(),
+                                        stormZone[i][j][k].getBlock().getLocation().getX(),
+                                        stormZone[i][j][k].getBlock().getLocation().getY(),
+                                        stormZone[i][j][k].getBlock().getLocation().getZ(),
                                         1,
                                         0,
                                         0,
@@ -261,29 +261,29 @@ public class Animation {
      * @return storm simulation.
      */
     private int[][][] buildStormSimulation() {
-        int[][][] simulationLightningZone = new int[lightningZone.length][lightningZone.length][lightningZone.length];
+        int[][][] simulationStormZone = new int[stormZone.length][stormZone.length][stormZone.length];
         int[] simulationStrikeStart = new int[3];
         int[] simulationStrikeTarget = new int[3];
 
-        for (int i = 0; i < lightningZone.length; i++) {
-            for (int j = 0; j < lightningZone[i].length; j++) {
-                for (int k = 0; k < lightningZone[i][j].length; k++) {
-                    if (lightningZone[i][j][k].getBlock().getType() == Material.AIR) {
-                        simulationLightningZone[i][j][k] = 0;
+        for (int i = 0; i < stormZone.length; i++) {
+            for (int j = 0; j < stormZone[i].length; j++) {
+                for (int k = 0; k < stormZone[i][j].length; k++) {
+                    if (stormZone[i][j][k].getBlock().getType() == Material.AIR) {
+                        simulationStormZone[i][j][k] = 0;
                     } else {
-                        simulationLightningZone[i][j][k] = 1;
+                        simulationStormZone[i][j][k] = 1;
                     }
 
-                    if (lightningZone[i][j][k] == strikeStart) {
-                        simulationLightningZone[i][j][k] = 4;
+                    if (stormZone[i][j][k] == strikeStart) {
+                        simulationStormZone[i][j][k] = 4;
 
                         simulationStrikeStart[0] = i;
                         simulationStrikeStart[1] = j;
                         simulationStrikeStart[2] = k;
                     }
 
-                    if (lightningZone[i][j][k] == strikeTarget) {
-                        simulationLightningZone[i][j][k] = 5;
+                    if (stormZone[i][j][k] == strikeTarget) {
+                        simulationStormZone[i][j][k] = 5;
 
                         simulationStrikeTarget[0] = i;
                         simulationStrikeTarget[1] = j;
@@ -293,11 +293,11 @@ public class Animation {
             }
         }
 
-        Simulation simulation = new Simulation(simulationLightningZone, simulationStrikeStart, simulationStrikeTarget);
+        Simulation simulation = new Simulation(simulationStormZone, simulationStrikeStart, simulationStrikeTarget);
         simulation.start();
 
         if (simulation.getPath()) {
-            return simulation.getSimulationLightningZone();
+            return simulation.getSimulationStormZone();
         }
         return null;
     }

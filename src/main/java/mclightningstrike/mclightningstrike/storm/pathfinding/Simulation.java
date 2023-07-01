@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class Simulation {
-    private final int[][][] simulationLightningZone;
+    private final int[][][] stormZone;
     private final int[] simulationStrikeStart;
     private final int[] simulationStrikeTarget;
 
-    private Node[][][] simulationNodeLightningZone;
+    private Node[][][] simulationStormZone;
     private Node simulationNodeStrikeStart;
     private Node simulationNodeStrikeTarget;
     private Node simulationNodeStrikeCurrent;
@@ -30,15 +30,15 @@ public class Simulation {
      * 5 = target space
      */
     public Simulation(
-            int[][][] simulationLightningZone,
+            int[][][] stormZone,
             int[] simulationStrikeStart,
             int[] simulationStrikeTarget
     ) {
-        this.simulationLightningZone = simulationLightningZone;
+        this.stormZone = stormZone;
         this.simulationStrikeStart = simulationStrikeStart;
         this.simulationStrikeTarget = simulationStrikeTarget;
 
-        this.simulationNodeLightningZone = new Node[this.simulationLightningZone.length][this.simulationLightningZone[0].length][this.simulationLightningZone[0][0].length];
+        this.simulationStormZone = new Node[this.stormZone.length][this.stormZone[0].length][this.stormZone[0][0].length];
 
         this.openList = new PriorityQueue<>(10, new NodeComparator());
         this.closedList = new ArrayList<>();
@@ -61,20 +61,20 @@ public class Simulation {
                 0
         );
 
-        simulationNodeLightningZone[simulationStrikeStart[0]][simulationStrikeStart[1]][simulationStrikeStart[2]] = simulationNodeStrikeCurrent;
-        simulationNodeLightningZone[simulationStrikeTarget[0]][simulationStrikeTarget[1]][simulationStrikeTarget[2]] = simulationNodeStrikeTarget;
+        simulationStormZone[simulationStrikeStart[0]][simulationStrikeStart[1]][simulationStrikeStart[2]] = simulationNodeStrikeCurrent;
+        simulationStormZone[simulationStrikeTarget[0]][simulationStrikeTarget[1]][simulationStrikeTarget[2]] = simulationNodeStrikeTarget;
 
 
-        for (int i = 0; i < simulationLightningZone.length; i++) {
-            for (int j = 0; j < simulationLightningZone[i].length; j++) {
-                for (int k = 0; k < simulationLightningZone[i][j].length; k++) {
-                    if (simulationLightningZone[i][j][k] == 0) {
+        for (int i = 0; i < stormZone.length; i++) {
+            for (int j = 0; j < stormZone[i].length; j++) {
+                for (int k = 0; k < stormZone[i][j].length; k++) {
+                    if (stormZone[i][j][k] == 0) {
                         Node node = new Node(i, j, k, 0);
-                        simulationNodeLightningZone[i][j][k] = node;
+                        simulationStormZone[i][j][k] = node;
                     }
-                    if (simulationLightningZone[i][j][k] == 1) {
+                    if (stormZone[i][j][k] == 1) {
                         Node node = new Node(i, j, k, 1);
-                        simulationNodeLightningZone[i][j][k] = node;
+                        simulationStormZone[i][j][k] = node;
                     }
                 }
             }
@@ -113,8 +113,8 @@ public class Simulation {
                     int row = path.get(i).getRow();
                     int col = path.get(i).getCol();
                     int zNum = path.get(i).getZ();
-                    if (simulationLightningZone[row][col][zNum] == 2) { // 2 is available but not explored? (orange)
-                        simulationLightningZone[row][col][zNum] = 3; // 3 is explored (blue)
+                    if (stormZone[row][col][zNum] == 2) { // 2 is available but not explored? (orange)
+                        stormZone[row][col][zNum] = 3; // 3 is explored (blue)
                     }
                 }
                 break;
@@ -124,8 +124,8 @@ public class Simulation {
                 } catch (NullPointerException e) {
                     System.out.println(e.getMessage());
                 }
-                simulationLightningZone[simulationNodeStrikeStart.getRow()][simulationNodeStrikeStart.getCol()][simulationNodeStrikeStart.getZ()] = 4;
-                simulationLightningZone[simulationNodeStrikeTarget.getRow()][simulationNodeStrikeTarget.getCol()][simulationNodeStrikeTarget.getZ()] = 5;
+                stormZone[simulationNodeStrikeStart.getRow()][simulationNodeStrikeStart.getCol()][simulationNodeStrikeStart.getZ()] = 4;
+                stormZone[simulationNodeStrikeTarget.getRow()][simulationNodeStrikeTarget.getCol()][simulationNodeStrikeTarget.getZ()] = 5;
                 try {
                     assert openList.peek() != null;
                 } catch (NullPointerException e) {
@@ -238,88 +238,88 @@ public class Simulation {
         int col = simulationNodeStrikeCurrent.getCol();
         int zNum = simulationNodeStrikeCurrent.getZ();
 
-        if (row - 1 > -1 && simulationNodeLightningZone[row - 1][col][zNum].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row - 1][col][zNum])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (row - 1 > -1 && simulationStormZone[row - 1][col][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row - 1][col][zNum])) {
+            Node[][][] grid = simulationStormZone;
             grid[row - 1][col][zNum].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row - 1][col][zNum]);
             grid[row - 1][col][zNum].setG(g);
             int h = calculateH(grid[row - 1][col][zNum]);
             grid[row - 1][col][zNum].setH(h);
             grid[row - 1][col][zNum].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row - 1][col][zNum]);
-            simulationLightningZone[row - 1][col][zNum] = 2;
+            stormZone[row - 1][col][zNum] = 2;
         }
 
-        if (col + 1 < simulationNodeLightningZone.length && simulationNodeLightningZone[row][col + 1][zNum].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row][col + 1][zNum])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (col + 1 < simulationStormZone.length && simulationStormZone[row][col + 1][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col + 1][zNum])) {
+            Node[][][] grid = simulationStormZone;
             grid[row][col + 1][zNum].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row][col + 1][zNum]);
             grid[row][col + 1][zNum].setG(g);
             int h = calculateH(grid[row][col + 1][zNum]);
             grid[row][col + 1][zNum].setH(h);
             grid[row][col + 1][zNum].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row][col + 1][zNum]);
-            simulationLightningZone[row][col + 1][zNum] = 2;
+            stormZone[row][col + 1][zNum] = 2;
         }
 
-        if (row + 1 < simulationNodeLightningZone.length && simulationNodeLightningZone[row + 1][col][zNum].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row + 1][col][zNum])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (row + 1 < simulationStormZone.length && simulationStormZone[row + 1][col][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row + 1][col][zNum])) {
+            Node[][][] grid = simulationStormZone;
             grid[row + 1][col][zNum].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row + 1][col][zNum]);
             grid[row + 1][col][zNum].setG(g);
             int h = calculateH(grid[row + 1][col][zNum]);
             grid[row + 1][col][zNum].setH(h);
             grid[row + 1][col][zNum].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row + 1][col][zNum]);
-            simulationLightningZone[row + 1][col][zNum] = 2;
+            stormZone[row + 1][col][zNum] = 2;
         }
 
-        if (col - 1 > -1 && simulationNodeLightningZone[row][col - 1][zNum].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row][col - 1][zNum])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (col - 1 > -1 && simulationStormZone[row][col - 1][zNum].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col - 1][zNum])) {
+            Node[][][] grid = simulationStormZone;
             grid[row][col - 1][zNum].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row][col - 1][zNum]);
             grid[row][col - 1][zNum].setG(g);
             int h = calculateH(grid[row][col - 1][zNum]);
             grid[row][col - 1][zNum].setH(h);
             grid[row][col - 1][zNum].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row][col - 1][zNum]);
-            simulationLightningZone[row][col - 1][zNum] = 2;
+            stormZone[row][col - 1][zNum] = 2;
         }
 
-        if (zNum - 1 > -1 && simulationNodeLightningZone[row][col][zNum - 1].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row][col][zNum - 1])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (zNum - 1 > -1 && simulationStormZone[row][col][zNum - 1].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col][zNum - 1])) {
+            Node[][][] grid = simulationStormZone;
             grid[row][col][zNum - 1].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row][col][zNum - 1]);
             grid[row][col][zNum - 1].setG(g);
             int h = calculateH(grid[row][col][zNum - 1]);
             grid[row][col][zNum - 1].setH(h);
             grid[row][col][zNum - 1].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row][col][zNum - 1]);
-            simulationLightningZone[row][col][zNum - 1] = 2;
+            stormZone[row][col][zNum - 1] = 2;
         }
 
-        if (zNum + 1 < simulationNodeLightningZone.length && simulationNodeLightningZone[row][col][zNum + 1].getType() == 0
-                && !closedList.contains(simulationNodeLightningZone[row][col][zNum + 1])) {
-            Node[][][] grid = simulationNodeLightningZone;
+        if (zNum + 1 < simulationStormZone.length && simulationStormZone[row][col][zNum + 1].getType() == 0
+                && !closedList.contains(simulationStormZone[row][col][zNum + 1])) {
+            Node[][][] grid = simulationStormZone;
             grid[row][col][zNum + 1].setParent(simulationNodeStrikeCurrent);
             int g = calculateG(grid[row][col][zNum + 1]);
             grid[row][col][zNum + 1].setG(g);
             int h = calculateH(grid[row][col][zNum + 1]);
             grid[row][col][zNum + 1].setH(h);
             grid[row][col][zNum + 1].setF();
-            simulationNodeLightningZone = grid;
+            simulationStormZone = grid;
             openList.add(grid[row][col][zNum + 1]);
-            simulationLightningZone[row][col][zNum + 1] = 2;
+            stormZone[row][col][zNum + 1] = 2;
         }
     }
 
@@ -344,7 +344,7 @@ public class Simulation {
      *
      * @return storm simulation.
      */
-    public int[][][] getSimulationLightningZone() {
-        return simulationLightningZone;
+    public int[][][] getSimulationStormZone() {
+        return stormZone;
     }
 }
