@@ -263,11 +263,11 @@ public class Animation {
                                         true
                                 );
                             }
-
                         }
                     }
                 }
             }
+            strikeTarget.getWorld().createExplosion(strikeTarget.getX(), strikeTarget.getY(), strikeTarget.getZ(), 2.5f, true, true);
         }
 
         /**
