@@ -1,7 +1,6 @@
 package mclightningstrike.mclightningstrike.storm;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
-import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,16 +10,16 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import java.util.UUID;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
-import static org.bukkit.Bukkit.getServer;
 
-public record StormEvent(McLightningStrike plugin) implements Listener {
+public record StormListener(McLightningStrike plugin) implements Listener {
 
     private static UUID arrow;
 
     @EventHandler
     public void onProjectileShot(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof Arrow) {
-            StormEvent.arrow = event.getEntity().getUniqueId();
+            getLogger().info("projectile hit");
+            StormListener.arrow = event.getEntity().getUniqueId();
         }
     }
 

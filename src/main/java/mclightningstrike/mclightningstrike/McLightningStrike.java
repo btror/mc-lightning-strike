@@ -1,7 +1,7 @@
 package mclightningstrike.mclightningstrike;
 
 import mclightningstrike.mclightningstrike.storm.StormCommand;
-import mclightningstrike.mclightningstrike.storm.StormEvent;
+import mclightningstrike.mclightningstrike.storm.StormListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class McLightningStrike extends JavaPlugin {
         Objects.requireNonNull(getCommand("strike")).setExecutor(command);
         getServer().getPluginManager().registerEvents(command, this);
 
-        getServer().getPluginManager().registerEvents(new StormEvent(this), this);
+        getServer().getPluginManager().registerEvents(new StormListener(this), this);
     }
 
     @Override
