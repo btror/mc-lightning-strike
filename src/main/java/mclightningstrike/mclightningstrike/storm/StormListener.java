@@ -7,28 +7,30 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.apache.logging.log4j.LogManager.getLogger;
 
 public record StormListener(McLightningStrike plugin) implements Listener {
 
-    private static UUID arrow;
+    private static final Set<UUID> arrows = new HashSet<>();
 
     @EventHandler
     public void onProjectileShot(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof Arrow) {
-            getLogger().info("projectile hit");
-            StormListener.arrow = event.getEntity().getUniqueId();
+            getLogger().info("projectile shot");
+            StormListener.arrows.add(event.getEntity().getUniqueId());
         }
     }
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent event) {
-        if (event.getEntity() instanceof Arrow && arrow != null) {
+        if (event.getEntity() instanceof Arrow && arrows.contains(event.getEntity().getUniqueId())) {
             getLogger().info("projectile hit");
             new Storm(plugin, event.getEntity().getLocation()).generate();
-            arrow = null;
+            arrows.remove(event.getEntity().getUniqueId());
         }
     }
 }

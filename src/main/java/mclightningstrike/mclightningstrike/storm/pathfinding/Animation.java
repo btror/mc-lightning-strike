@@ -1,6 +1,7 @@
 package mclightningstrike.mclightningstrike.storm.pathfinding;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
+import mclightningstrike.mclightningstrike.storm.Storm;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -10,10 +11,10 @@ import java.util.Random;
 
 public class Animation {
     private final McLightningStrike plugin;
-    private static Location[][][] stormZone;
-    private static Location strikeStart;
-    private static Location strikeTarget;
-    private static int[][][] stormSimulation;
+    private final Location[][][] stormZone;
+    private final Location strikeStart;
+    private final Location strikeTarget;
+    private int[][][] stormSimulation;
 
     /**
      * Constructor.
@@ -30,9 +31,9 @@ public class Animation {
             Location strikeTarget
     ) {
         this.plugin = plugin;
-        Animation.stormZone = stormZone;
-        Animation.strikeStart = strikeStart;
-        Animation.strikeTarget = strikeTarget;
+        this.stormZone = stormZone;
+        this.strikeStart = strikeStart;
+        this.strikeTarget = strikeTarget;
     }
 
     /**
@@ -50,6 +51,7 @@ public class Animation {
      */
     private void createStorm() {
         new StormAnimation().runTaskTimer(plugin, 0, 1);
+        // new StormAnimation().runTaskTimerAsynchronously(plugin, 0, 1);
     }
 
     /**
@@ -112,7 +114,7 @@ public class Animation {
      * <p>
      * Storm animation class that extends BukkitRunnable. Responsible for handling cloud and lightning bold animations.
      */
-    private static class StormAnimation extends BukkitRunnable {
+    private class StormAnimation extends BukkitRunnable {
         private double t = 0;
 
         /**
