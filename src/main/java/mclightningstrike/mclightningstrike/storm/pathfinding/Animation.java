@@ -1,7 +1,6 @@
 package mclightningstrike.mclightningstrike.storm.pathfinding;
 
 import mclightningstrike.mclightningstrike.McLightningStrike;
-import mclightningstrike.mclightningstrike.storm.Storm;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -51,7 +50,6 @@ public class Animation {
      */
     private void createStorm() {
         new StormAnimation().runTaskTimer(plugin, 0, 1);
-        // new StormAnimation().runTaskTimerAsynchronously(plugin, 0, 1);
     }
 
     /**
@@ -68,7 +66,7 @@ public class Animation {
      * @return storm simulation.
      */
     private int[][][] buildStormSimulation() {
-        int[][][] simulationStormZone = new int[stormZone.length][stormZone.length][stormZone.length];
+        int[][][] simulationStormZone = new int[stormZone.length][stormZone[0].length][stormZone[0][0].length];
         int[] simulationStrikeStart = new int[3];
         int[] simulationStrikeTarget = new int[3];
 
@@ -116,6 +114,7 @@ public class Animation {
      */
     private class StormAnimation extends BukkitRunnable {
         private double t = 0;
+        private final double cloudSize = new Random().nextDouble() * 1.2 + (3.0 - 1.2);
 
         /**
          * Constructor.
@@ -134,13 +133,12 @@ public class Animation {
             double y = direction.getY() * (t + new Random().nextDouble() * (0.5));
             double z = direction.getZ() * (t + new Random().nextDouble() * (0.3));
 
-            spawnCloudLayer(6, -1.0, x, y, z);
-            spawnCloudLayer(7, -0.5, x, y, z);
-            spawnCloudLayer(9, 0.0, x, y, z);
-            spawnCloudLayer(8, 0.5, x, y, z);
-            spawnCloudLayer(6, 1.0, x, y, z);
+            spawnCloudLayer(3, -1.0, x, y, z);
+            spawnCloudLayer(4, -0.5, x, y, z);
+            spawnCloudLayer(5, 0.0, x, y, z);
+            spawnCloudLayer(4, 0.5, x, y, z);
 
-            if (t > 5.0) {
+            if (t > cloudSize) {
                 createLightningBolt();
                 this.cancel();
             }
@@ -340,7 +338,7 @@ public class Animation {
         private void goForward(double x, double y, double z, Location location) {
             location.add(x, y, z);
             location.getWorld().spawnParticle(
-                    Particle.SMOKE_LARGE,
+                    Particle.ELECTRIC_SPARK,
                     location.getX(),
                     location.getY(),
                     location.getZ(),
@@ -379,7 +377,7 @@ public class Animation {
         private void goBackward(double x, double y, double z, Location location) {
             location.subtract(x, y, z);
             location.getWorld().spawnParticle(
-                    Particle.SMOKE_LARGE,
+                    Particle.ELECTRIC_SPARK,
                     location.getX(),
                     location.getY(),
                     location.getZ(),

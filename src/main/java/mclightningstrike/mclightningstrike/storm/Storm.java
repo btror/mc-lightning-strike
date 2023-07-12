@@ -3,37 +3,66 @@ package mclightningstrike.mclightningstrike.storm;
 import mclightningstrike.mclightningstrike.McLightningStrike;
 import mclightningstrike.mclightningstrike.storm.pathfinding.Animation;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
-public class Storm {
-
-    private final McLightningStrike plugin;
-    private Location strikeTarget;
-    private Location strikeStart;
+public record Storm(McLightningStrike plugin, Location strikeTarget) {
 
     /**
      * Constructor.
      * <p>
      * Creates a storm.
      *
-     * @param plugin       McLightningStrike instance
-     * @param strikeTarget location of storm bolt target
+     * @param plugin       McLightningStrike instance.
+     * @param strikeTarget location of storm bolt target.
      */
-    public Storm(McLightningStrike plugin, Location strikeTarget) {
-        this.plugin = plugin;
-        this.strikeTarget = strikeTarget;
+    public Storm {
     }
 
     /**
-     * Strikes storm
-     * <p>
-     * Storm Zone Mappings:
-     * i = length
-     * j = height
-     * k = width
+     * Generates a storm.
+     *
+     * @param scatteredStorm a very large storm.
      */
-    public void generate() {
-        Location[][][] stormZone = createStormZone();
-        new Animation(plugin, stormZone, strikeStart, strikeTarget).start();
+    public void generate(boolean scatteredStorm) {
+        if (!scatteredStorm) {
+            int random = (int) (Math.random() * 15 + 12); // 15 max 12 min
+            createStormZone(strikeTarget, random, random, random);
+        } else {
+            for (int i = 0; i < 8; i++) {
+                int randomSize = (int) (Math.random() * 15 + 12); // 15 max 12 min
+                int randomLocationOffset = (int) (Math.random() * 10 + -10); // 10 max -10 min
+                createStormZone(
+                        generateNewLocationRelativeToTarget(randomLocationOffset),
+                        randomSize,
+                        randomSize,
+                        randomSize
+                );
+            }
+        }
+    }
+
+    /**
+     * Generates a new location relative to the storm target location.
+     *
+     * @param size distance (x and z) from the original target location.
+     */
+    private Location generateNewLocationRelativeToTarget(int size) {
+        Location location = new Location(
+                strikeTarget.getWorld(),
+                strikeTarget.getX() + size,
+                strikeTarget.getY(),
+                strikeTarget.getZ() + size
+        );
+        while (location.getBlock().getType() != Material.AIR) {
+            double newY = location.getY() + 1.0;
+            location = new Location(
+                    location.getWorld(),
+                    location.getX(),
+                    newY,
+                    location.getZ()
+            );
+        }
+        return location;
     }
 
     /**
@@ -44,27 +73,30 @@ public class Storm {
      * j = height
      * k = width
      *
-     * @return storm location.
+     * @param strikeTarget target location of the lightning bolt.
+     * @param x            storm zone x size
+     * @param y            storm zone y size
+     * @param z            storm zone z size
      */
-    private Location[][][] createStormZone() {
-        Location[][][] stormZone = new Location[20][20][20];
+    private void createStormZone(Location strikeTarget, int x, int y, int z) {
+        Location[][][] stormZone = new Location[x][y][z];
         for (int i = 0; i < stormZone.length; i++) {
             for (int j = 0; j < stormZone[i].length; j++) {
                 for (int k = 0; k < stormZone[i][j].length; k++) {
                     Location location = new Location(
                             strikeTarget.getWorld(),
-                            strikeTarget.getX() - 10 + i,
+                            strikeTarget.getX() - (x / 2.0) + i,
                             strikeTarget.getY() + 0 + j,
-                            strikeTarget.getZ() + 10 - k
+                            strikeTarget.getZ() + (z / 2.0) - k
                     );
                     stormZone[i][j][k] = location;
                 }
             }
         }
 
-        strikeStart = stormZone[(int) (Math.random() * 19)][19][(int) (Math.random() * 19)];
-        strikeTarget = stormZone[10][0][10];
+        Location strikeStart = stormZone[(int) (Math.random() * x - 1)][y - 1][(int) (Math.random() * z - 1)];
+        strikeTarget = stormZone[x / 2][0][z / 2];
 
-        return stormZone;
+        new Animation(plugin, stormZone, strikeStart, strikeTarget).start();
     }
 }
