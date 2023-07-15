@@ -139,7 +139,13 @@ public class Animation {
             spawnCloudLayer(4, 0.5, x, y, z);
 
             if (t > cloudSize) {
-                createLightningBolt();
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        createLightningBolt();
+                        cancel();
+                    }
+                }.runTaskTimer(plugin, (long) this.t + 50L, 20L);
                 this.cancel();
             }
 
@@ -268,6 +274,10 @@ public class Animation {
                 }
             }
             strikeTarget.getWorld().createExplosion(strikeTarget.getX(), strikeTarget.getY(), strikeTarget.getZ(), 2.5f, true, true);
+        }
+
+        public double getT() {
+            return t;
         }
 
         /**

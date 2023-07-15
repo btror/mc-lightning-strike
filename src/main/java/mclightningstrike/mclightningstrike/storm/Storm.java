@@ -20,8 +20,6 @@ public record Storm(McLightningStrike plugin, Location strikeTarget) {
 
     /**
      * Generates a storm.
-     *
-     * @param scatteredStorm a very large storm.
      */
     public void generate(boolean scatteredStorm) {
         if (!scatteredStorm) {

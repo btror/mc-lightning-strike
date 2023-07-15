@@ -113,8 +113,8 @@ public class Simulation {
                     int row = path.get(i).getRow();
                     int col = path.get(i).getCol();
                     int zNum = path.get(i).getZ();
-                    if (stormZone[row][col][zNum] == 2) { // 2 is available but not explored? (orange)
-                        stormZone[row][col][zNum] = 3; // 3 is explored (blue)
+                    if (stormZone[row][col][zNum] == 2) {
+                        stormZone[row][col][zNum] = 3;
                     }
                 }
                 break;
