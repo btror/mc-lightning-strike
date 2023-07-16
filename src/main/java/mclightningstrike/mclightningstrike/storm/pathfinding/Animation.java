@@ -181,79 +181,82 @@ public class Animation {
                                     );
                                 }
                             }
-//                            else if (i > 0 && stormSimulation[i - 1][j][k] == 3) {
-//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-//                                    w.spawnParticle(
-//                                            Particle.FIREWORKS_SPARK,
-//                                            stormZone[i][j][k].getBlock().getLocation().getX() - n,
-//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
-//                                            1,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            null,
-//                                            true
-//                                    );
-//                                }
-//                            }
-//                            else if (i < stormSimulation.length - 1 && stormSimulation[i + 1][j][k] == 3) {
-//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-//                                    w.spawnParticle(
-//                                            Particle.FIREWORKS_SPARK,
-//                                            stormZone[i][j][k].getBlock().getLocation().getX() + n,
-//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
-//                                            1,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            null,
-//                                            true
-//                                    );
-//                                }
-//                            }
-//                            else if (k > 0 && stormSimulation[i][j][k - 1] == 3) {
-//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-//                                    w.spawnParticle(
-//                                            Particle.FIREWORKS_SPARK,
-//                                            stormZone[i][j][k].getBlock().getLocation().getX(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getZ() - n,
-//                                            1,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            null,
-//                                            true
-//                                    );
-//                                }
-//                            }
-//                            else if (k < stormSimulation[0][0].length - 1 && stormSimulation[i][j][k + 1] == 3) {
-//                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-//                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-//                                    w.spawnParticle(
-//                                            Particle.FIREWORKS_SPARK,
-//                                            stormZone[i][j][k].getBlock().getLocation().getX(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-//                                            stormZone[i][j][k].getBlock().getLocation().getZ() + n,
-//                                            1,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            0,
-//                                            null,
-//                                            true
-//                                    );
-//                                }
-//                            }
-                            else {
+                            // good
+                            else if (i > 0 && stormSimulation[i - 1][j][k] == 3) {
+                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                    w.spawnParticle(
+                                            Particle.FIREWORKS_SPARK,
+                                            stormZone[i][j][k].getBlock().getLocation().getX() - n,
+                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            null,
+                                            true
+                                    );
+                                }
+                            }
+                            // good
+                            else if (i < stormSimulation.length - 1 && stormSimulation[i + 1][j][k] == 3) {
+                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                    w.spawnParticle(
+                                            Particle.FIREWORKS_SPARK,
+                                            stormZone[i][j][k].getBlock().getLocation().getX() + n,
+                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            null,
+                                            true
+                                    );
+                                }
+                            }
+                            // might be slightly off
+                            else if (k > 0 && stormSimulation[i][j][k - 1] == 3) {
+                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                    w.spawnParticle(
+                                            Particle.FIREWORKS_SPARK,
+                                            stormZone[i][j][k].getBlock().getLocation().getX(),
+                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+                                            stormZone[i][j][k].getBlock().getLocation().getZ() + n,
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            null,
+                                            true
+                                    );
+                                }
+                            }
+                            // might be slightly off
+                            else if (k < stormSimulation[0][0].length - 1 && stormSimulation[i][j][k + 1] == 3) {
+                                for (double n = 0.0; n <= 1.0; n += 0.20) {
+                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
+                                    w.spawnParticle(
+                                            Particle.FIREWORKS_SPARK,
+                                            stormZone[i][j][k].getBlock().getLocation().getX(),
+                                            stormZone[i][j][k].getBlock().getLocation().getY(),
+                                            stormZone[i][j][k].getBlock().getLocation().getZ() - n,
+                                            1,
+                                            0,
+                                            0,
+                                            0,
+                                            0,
+                                            null,
+                                            true
+                                    );
+                                }
+                            } else {
                                 World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
                                 w.spawnParticle(
                                         Particle.FIREWORKS_SPARK,
