@@ -1,6 +1,6 @@
 # mc-lightning-strike plugin
 
-### A bukkit plugin that generates storms when a potion of harm is thrown.
+### A spigot plugin that generates storms when a potion of harm is thrown.
 
 <br>
 
