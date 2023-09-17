@@ -1,5 +1,6 @@
 package mclightningstrike.mclightningstrike.storm.pathfinding;
 
+import com.github.btror.mcpathfinding.McPathfinding;
 import mclightningstrike.mclightningstrike.McLightningStrike;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -7,13 +8,14 @@ import org.bukkit.util.Vector;
 
 import java.util.Random;
 
-
 public class Animation {
     private final McLightningStrike plugin;
     private final Location[][][] stormZone;
     private final Location strikeStart;
     private final Location strikeTarget;
     private int[][][] stormSimulation;
+    private long delay = 0;
+    private long period = 0;
 
     /**
      * Constructor.
@@ -27,8 +29,7 @@ public class Animation {
             McLightningStrike plugin,
             Location[][][] stormZone,
             Location strikeStart,
-            Location strikeTarget
-    ) {
+            Location strikeTarget) {
         this.plugin = plugin;
         this.stormZone = stormZone;
         this.strikeStart = strikeStart;
@@ -110,7 +111,8 @@ public class Animation {
     /**
      * Helper Class.
      * <p>
-     * Storm animation class that extends BukkitRunnable. Responsible for handling cloud and lightning bold animations.
+     * Storm animation class that extends BukkitRunnable. Responsible for handling
+     * cloud and lightning bold animations.
      */
     private class StormAnimation extends BukkitRunnable {
         private double t = 0;
@@ -142,145 +144,20 @@ public class Animation {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        createLightningBolt();
+                        // createLightningBolt();
+                        strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 150, 100);
+                        strikeTarget.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 250, 100);
+                        McPathfinding.greedyBestFirstSearch(plugin, stormZone, strikeStart, strikeTarget,
+                                Particle.ELECTRIC_SPARK, true, delay, period);
+                        strikeTarget.getWorld().createExplosion(strikeTarget.getX(), strikeTarget.getY(),
+                                strikeTarget.getZ(), 2.5f, true, true);
                         cancel();
                     }
-                }.runTaskTimer(plugin, (long) this.t + 50L, 20L);
+                }.runTaskTimer(plugin, (long) this.t + 50L, 0L);
                 this.cancel();
             }
 
             t += new Random().nextDouble() * (0.25);
-        }
-
-        /**
-         * Shoots a lightning bolt from the storm cloud.
-         */
-        private void createLightningBolt() {
-            strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 150, 100);
-            strikeTarget.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 250, 100);
-
-            for (int i = 0; i < stormSimulation.length; i++) {
-                for (int j = 0; j < stormSimulation[0].length; j++) {
-                    for (int k = 0; k < stormSimulation[0][0].length; k++) {
-                        if (stormSimulation[i][j][k] == 3) {
-                            if (j > 0 && stormSimulation[i][j - 1][k] == 3) {
-                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                    w.spawnParticle(
-                                            Particle.FIREWORKS_SPARK,
-                                            stormZone[i][j][k].getBlock().getLocation().getX(),
-                                            stormZone[i][j][k].getBlock().getLocation().getY() - n,
-                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
-                                            1,
-                                            0,
-                                            0,
-                                            0,
-                                            0,
-                                            null,
-                                            true
-                                    );
-                                }
-                            }
-                            // good
-                            else if (i > 0 && stormSimulation[i - 1][j][k] == 3) {
-                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                    w.spawnParticle(
-                                            Particle.FIREWORKS_SPARK,
-                                            stormZone[i][j][k].getBlock().getLocation().getX() - n,
-                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
-                                            1,
-                                            0,
-                                            0,
-                                            0,
-                                            0,
-                                            null,
-                                            true
-                                    );
-                                }
-                            }
-                            // good
-                            else if (i < stormSimulation.length - 1 && stormSimulation[i + 1][j][k] == 3) {
-                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                    w.spawnParticle(
-                                            Particle.FIREWORKS_SPARK,
-                                            stormZone[i][j][k].getBlock().getLocation().getX() + n,
-                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-                                            stormZone[i][j][k].getBlock().getLocation().getZ(),
-                                            1,
-                                            0,
-                                            0,
-                                            0,
-                                            0,
-                                            null,
-                                            true
-                                    );
-                                }
-                            }
-                            // might be slightly off
-                            else if (k > 0 && stormSimulation[i][j][k - 1] == 3) {
-                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                    w.spawnParticle(
-                                            Particle.FIREWORKS_SPARK,
-                                            stormZone[i][j][k].getBlock().getLocation().getX(),
-                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-                                            stormZone[i][j][k].getBlock().getLocation().getZ() + n,
-                                            1,
-                                            0,
-                                            0,
-                                            0,
-                                            0,
-                                            null,
-                                            true
-                                    );
-                                }
-                            }
-                            // might be slightly off
-                            else if (k < stormSimulation[0][0].length - 1 && stormSimulation[i][j][k + 1] == 3) {
-                                for (double n = 0.0; n <= 1.0; n += 0.20) {
-                                    World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                    w.spawnParticle(
-                                            Particle.FIREWORKS_SPARK,
-                                            stormZone[i][j][k].getBlock().getLocation().getX(),
-                                            stormZone[i][j][k].getBlock().getLocation().getY(),
-                                            stormZone[i][j][k].getBlock().getLocation().getZ() - n,
-                                            1,
-                                            0,
-                                            0,
-                                            0,
-                                            0,
-                                            null,
-                                            true
-                                    );
-                                }
-                            } else {
-                                World w = stormZone[i][j][k].getBlock().getLocation().getWorld();
-                                w.spawnParticle(
-                                        Particle.FIREWORKS_SPARK,
-                                        stormZone[i][j][k].getBlock().getLocation().getX(),
-                                        stormZone[i][j][k].getBlock().getLocation().getY(),
-                                        stormZone[i][j][k].getBlock().getLocation().getZ(),
-                                        1,
-                                        0,
-                                        0,
-                                        0,
-                                        0,
-                                        null,
-                                        true
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-            strikeTarget.getWorld().createExplosion(strikeTarget.getX(), strikeTarget.getY(), strikeTarget.getZ(), 2.5f, true, true);
-        }
-
-        public double getT() {
-            return t;
         }
 
         /**
@@ -300,8 +177,7 @@ public class Animation {
                         strikeTarget.getWorld(),
                         strikeStart.getX() + (i / randomX),
                         strikeStart.getY() + randomY,
-                        strikeStart.getZ()
-                );
+                        strikeStart.getZ());
                 goForward(x, y, z, location);
             }
             for (int i = 0; i < length; i++) {
@@ -311,8 +187,7 @@ public class Animation {
                         strikeTarget.getWorld(),
                         strikeStart.getX() - (i / randomX),
                         strikeStart.getY() + randomY,
-                        strikeStart.getZ()
-                );
+                        strikeStart.getZ());
                 goForward(x, y, z, location);
             }
 
@@ -323,8 +198,7 @@ public class Animation {
                         strikeTarget.getWorld(),
                         strikeStart.getX() + (i / randomX),
                         strikeStart.getY() + randomY,
-                        strikeStart.getZ()
-                );
+                        strikeStart.getZ());
                 goBackward(x, y, z, location);
             }
             for (int i = 0; i < length; i++) {
@@ -334,8 +208,7 @@ public class Animation {
                         strikeTarget.getWorld(),
                         strikeStart.getX() - (i / randomX),
                         strikeStart.getY() + randomY,
-                        strikeStart.getZ()
-                );
+                        strikeStart.getZ());
                 goBackward(x, y, z, location);
             }
         }
@@ -361,8 +234,7 @@ public class Animation {
                     0,
                     0,
                     null,
-                    true
-            );
+                    true);
             location.getWorld().spawnParticle(
                     Particle.CAMPFIRE_SIGNAL_SMOKE,
                     location.getX(),
@@ -374,8 +246,7 @@ public class Animation {
                     0,
                     0,
                     null,
-                    true
-            );
+                    true);
             location.subtract(x, y, z);
         }
 
@@ -400,8 +271,7 @@ public class Animation {
                     0,
                     0,
                     null,
-                    true
-            );
+                    true);
             location.getWorld().spawnParticle(
                     Particle.CAMPFIRE_SIGNAL_SMOKE,
                     location.getX(),
@@ -413,8 +283,7 @@ public class Animation {
                     0,
                     0,
                     null,
-                    true
-            );
+                    true);
             location.add(x, y, z);
         }
     }
