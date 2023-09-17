@@ -46,9 +46,9 @@ Scattered lightning strikes.
 <br>
 
 
-### Tech stack
-- Minecraft 1.19.4
+### Dependencies
 - spigot 1.19.4
+- [mc-pathfinding](https://github.com/btror/mc-pathfinding) 1.1.0
 
 
 ### Similar repositories by <a href="https://github.com/btror/AStar">btror</a>
