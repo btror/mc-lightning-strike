@@ -13,9 +13,8 @@ public class Animation {
     private final Location[][][] stormZone;
     private final Location strikeStart;
     private final Location strikeTarget;
-    private int[][][] stormSimulation;
-    private long delay = 0;
-    private long period = 0;
+    private final long delay = 0;
+    private final long period = 0;
 
     /**
      * Constructor.
@@ -40,10 +39,7 @@ public class Animation {
      * Begin storm creation.
      */
     public void start() {
-        stormSimulation = buildStormSimulation();
-        if (stormSimulation != null) {
-            createStorm();
-        }
+        createStorm();
     }
 
     /**
@@ -51,61 +47,6 @@ public class Animation {
      */
     private void createStorm() {
         new StormAnimation().runTaskTimer(plugin, 0, 1);
-    }
-
-    /**
-     * Creates a storm simulation.
-     * <p>
-     * Simulation Integer Mappings:
-     * 0 = open space (can be explored in pathfinding)
-     * 1 = blocked space (cannot be explored in pathfinding)
-     * 2 = visited space (already explored in pathfinding)
-     * 3 = final path space (space in the final path)
-     * 4 = start space
-     * 5 = target space
-     *
-     * @return storm simulation.
-     */
-    private int[][][] buildStormSimulation() {
-        int[][][] simulationStormZone = new int[stormZone.length][stormZone[0].length][stormZone[0][0].length];
-        int[] simulationStrikeStart = new int[3];
-        int[] simulationStrikeTarget = new int[3];
-
-        for (int i = 0; i < stormZone.length; i++) {
-            for (int j = 0; j < stormZone[i].length; j++) {
-                for (int k = 0; k < stormZone[i][j].length; k++) {
-                    if (stormZone[i][j][k].getBlock().getType() == Material.AIR) {
-                        simulationStormZone[i][j][k] = 0;
-                    } else {
-                        simulationStormZone[i][j][k] = 1;
-                    }
-
-                    if (stormZone[i][j][k] == strikeStart) {
-                        simulationStormZone[i][j][k] = 4;
-
-                        simulationStrikeStart[0] = i;
-                        simulationStrikeStart[1] = j;
-                        simulationStrikeStart[2] = k;
-                    }
-
-                    if (stormZone[i][j][k] == strikeTarget) {
-                        simulationStormZone[i][j][k] = 5;
-
-                        simulationStrikeTarget[0] = i;
-                        simulationStrikeTarget[1] = j;
-                        simulationStrikeTarget[2] = k;
-                    }
-                }
-            }
-        }
-
-        Simulation simulation = new Simulation(simulationStormZone, simulationStrikeStart, simulationStrikeTarget);
-        simulation.start();
-
-        if (simulation.getPath()) {
-            return simulation.getSimulationStormZone();
-        }
-        return null;
     }
 
     /**
@@ -144,7 +85,6 @@ public class Animation {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        // createLightningBolt();
                         strikeStart.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 150, 100);
                         strikeTarget.getWorld().playSound(strikeStart, Sound.ENTITY_LIGHTNING_BOLT_IMPACT, 250, 100);
                         McPathfinding.greedyBestFirstSearch(plugin, stormZone, strikeStart, strikeTarget,
