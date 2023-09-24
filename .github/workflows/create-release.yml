@@ -57,4 +57,4 @@ jobs:
           gh release create "${{ steps.set_maven_version.outputs.MAVEN_VERSION }}" "/home/runner/work/mc-lightning-strike/mc-lightning-strike/target/mc-lightning-strike-${{ steps.set_maven_version.outputs.MAVEN_VERSION }}.jar"
           gh release download --repo "${{ github.repository }}" "${{ steps.set_maven_version.outputs.MAVEN_VERSION }}" --pattern "*.jar"
         env:
-          GITHUB_TOKEN: ${{ github.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
