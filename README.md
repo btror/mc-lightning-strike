@@ -23,7 +23,7 @@ A spigot plugin that generates a storm when a potion of harm (instant damage I o
 
 ### Dependencies
 - spigot Version 1.19.4
-- [mc-pathfinding](https://github.com/btror/mc-pathfinding/releases/tag/1.3.26) Version 1.3.26
+- [mc-pathfinding](https://github.com/btror/mc-pathfinding/releases/tag/1.3.28) Version 1.3.28
 
 ### Similar repositories by <a href="https://github.com/btror/AStar">btror</a>
 - <a href="https://github.com/btror/mc-pathfinding">mc-pathfinding Library</a>
