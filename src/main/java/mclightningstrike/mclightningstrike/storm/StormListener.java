@@ -40,7 +40,8 @@ public record StormListener(McLightningStrike plugin) implements Listener {
     /**
      * Event handler for the harm potion on landing.
      * <p>
-     * This is used to verify stored data related to a thrown harm potion and spawning a storm.
+     * This is used to verify stored data related to a thrown harm potion and
+     * spawning a storm.
      *
      * @param event ProjectileHitEvent
      */

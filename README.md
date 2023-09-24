@@ -1,58 +1,31 @@
-# mc-lightning-strike plugin
+# Spigot mc-lightning-strike Plugin
 
-### A spigot plugin that generates storms when a potion of harm is thrown.
+A spigot plugin that generates storms when a potion of harm (instant damage I or II) is thrown.
 
-<br>
-
-Single lightning strike.
-- triggered by potion of harming: instant damage I
+<i>instant damage I</i>
 
 <img src="resources/demo_1.gif" width="450" height="450">
 
+<br>
+<br>
 <details>
 
-  <summary>more</summary>
-
+  <summary><i>more</i></summary>
   <br>
-
-  <summary>Single lightning strike spam.</summary>
-
+  <summary><i>instant damage II</i></summary>
   <br>
-
-  <img src="resources/demo_2.gif" width="450" height="450">
-
+  <img src="resources/demo_4.gif" width="450" height="450">
   <br>
   <br>
-
-  <summary>Lightning strike pathfinding.</summary>
-
+  <summary><i>pathfinding</i></summary>
   <br>
-
   <img src="resources/demo_3.gif" width="450" height="450">
-  
 </details>
 
-<br>
-<br>
-
-Scattered lightning strikes.
-- triggered by potion of harming: instant damage II
-
-<br>
-
-<img src="resources/demo_4.gif" width="450" height="450">
-
-<br>
-<br>
-
-
 ### Dependencies
-- spigot 1.19.4
-- [mc-pathfinding](https://github.com/btror/mc-pathfinding) 1.1.0
-
+- spigot Version 1.19.4
+- [mc-pathfinding](https://github.com/btror/mc-pathfinding/releases/tag/1.3.26) Version 1.3.26
 
 ### Similar repositories by <a href="https://github.com/btror/AStar">btror</a>
-- <a href="https://github.com/btror/MinecraftPathfindingPlugin">MinecraftPathfindingPlugin</a>
-- <a href="https://github.com/btror/TraversalAlgorithmVisualization">TraversalAlgorithmVisualization</a>
-- <a href="https://github.com/btror/AStar">AStar</a>
-- <a href="https://github.com/btror/A-Star">A-Star</a>
+- <a href="https://github.com/btror/mc-pathfinding">mc-pathfinding Library</a>
+- <a href="https://github.com/btror/mc-pathfinding-maze">mc-pathfinding-maze Plugin</a>
