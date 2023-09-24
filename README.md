@@ -11,9 +11,12 @@ A spigot plugin that generates a storm when a potion of harm (instant damage I o
 <br>
 <i>instant damage II</i>
 <br>
+<br>
 <img src="resources/demo_4.gif" width="450" height="450">
 <br>
+<br>
 <i>pathfinding</i>
+<br>
 <br>
 <img src="resources/demo_3.gif" width="450" height="450">
 </details>
