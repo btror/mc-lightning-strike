@@ -1,6 +1,7 @@
 name: mc-lightning-strike
 author: btror
 description: Plugin for spawning lightning storms.
-version: '${project.version}'
+version: "${project.version}"
 main: mclightningstrike.mclightningstrike.McLightningStrike
 api-version: 1.13
+depend: [mc-pathfinding]
